@@ -37,7 +37,7 @@ exports.createTemplate = async (req, res) => {
       description: req.body.description,
       isPublic: req.body.isPublic,
       components: req.body.components,
-      userId: '000000000000000000000000' // For development
+      userId: req.user.id // Get user ID from auth middleware
     });
 
     const newTemplate = await template.save();

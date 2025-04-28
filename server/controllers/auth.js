@@ -43,18 +43,26 @@ exports.register = async (req, res) => {
 
 // Login user
 exports.login = async (req, res) => {
+  console.log('=== Login Request ===');
+  console.log('Headers:', req.headers);
+  console.log('Body:', req.body);
   try {
+    console.log('Login request received:', req.body);
     const { email, password } = req.body;
 
     // Find user
     const user = await User.findOne({ email });
+    console.log('User found:', user ? 'yes' : 'no');
     if (!user) {
+      console.log('User not found');
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
     // Check password
     const isMatch = await user.comparePassword(password);
+    console.log('Password match:', isMatch ? 'yes' : 'no');
     if (!isMatch) {
+      console.log('Password does not match');
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
@@ -64,6 +72,7 @@ exports.login = async (req, res) => {
       process.env.JWT_SECRET || 'your_jwt_secret',
       { expiresIn: '24h' }
     );
+    console.log('Token created');
 
     res.json({
       token,
@@ -73,7 +82,9 @@ exports.login = async (req, res) => {
         email: user.email
       }
     });
+    console.log('Login successful');
   } catch (err) {
+    console.error('Login error:', err);
     res.status(500).json({ message: err.message });
   }
 };

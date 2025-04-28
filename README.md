@@ -1,6 +1,6 @@
 # Low Code No Code Platform
 
-A modern low-code/no-code platform with drag-and-drop functionality, built with React and Node.js. This platform allows users to create web applications without writing code through a visual interface.
+A modern low-code/no-code platform with drag-and-drop functionality, built with React and Node.js. This platform allows users to create web applications without writing code through a visual interface and deploy them instantly to production.
 
 ## Features
 
@@ -10,6 +10,19 @@ A modern low-code/no-code platform with drag-and-drop functionality, built with 
   - Property editor for component customization
   - Multiple component support
   - Component resizing and positioning
+
+- **Authentication & Security**
+  - JWT-based authentication
+  - Protected routes
+  - Secure API endpoints
+  - User-specific templates
+
+- **Deployment System**
+  - One-click deployment
+  - Automatic Next.js app generation
+  - Netlify integration
+  - Live URL for each template
+  - Deployment history tracking
 
 - **Component Library**
   - Form Components
@@ -48,6 +61,8 @@ A modern low-code/no-code platform with drag-and-drop functionality, built with 
 - Node.js (v14 or higher)
 - MongoDB (v4.4 or higher)
 - npm (v6 or higher)
+- Git (for deployment)
+- A Netlify account (for deployment)
 
 ## Installation
 
@@ -71,8 +86,29 @@ A modern low-code/no-code platform with drag-and-drop functionality, built with 
 
 4. Create a `.env` file in the root directory:
    ```
-   MONGODB_URI=mongodb://localhost:27017/lowcode-platform
+   MONGODB_URI=mongodb://root:example@localhost:27017/lowcode?authSource=admin
    PORT=5000
+   JWT_SECRET=your_jwt_secret_here
+   ```
+
+## Deployment Configuration
+
+1. **Netlify Setup**
+   - Create a Netlify account if you don't have one
+   - Install Netlify CLI:
+     ```bash
+     npm install -g netlify-cli
+     ```
+   - Login to Netlify:
+     ```bash
+     netlify login
+     ```
+
+2. **Environment Variables**
+   Add these to your Netlify site settings:
+   ```
+   MONGODB_URI=your_mongodb_uri
+   JWT_SECRET=your_jwt_secret
    ```
 
 ## Running the Application
@@ -88,6 +124,27 @@ A modern low-code/no-code platform with drag-and-drop functionality, built with 
    - Frontend development server on port 3000
 
 ## Using the Platform
+
+### Authentication
+1. **Register/Login**
+   - Default admin credentials:
+     - Email: admin@example.com
+     - Password: admin123
+   - Create new account using the registration form
+   - Login to access protected features
+
+### Template Management
+1. **Creating Templates**
+   - Click 'New Template' button
+   - Add a name and description
+   - Set visibility (public/private)
+   - Save your template
+
+2. **Deploying Templates**
+   - Open a template
+   - Click 'Deploy Template' button
+   - Wait for deployment to complete
+   - Access your live template using the provided URL
 
 ### Basic Operations
 1. **Adding Components**

@@ -43,42 +43,34 @@ const useStyles = styled((theme) => ({
   },
 }));
 
-function RenderComponent({ type, properties, formContext, onValidationChange, onChange }) {
-  const [value, setValue] = useState(properties.value || '');
+function RenderComponent({ component }) {
+  const { type, properties = {} } = component || {};
+  const [value, setValue] = useState(properties?.value || '');
   const [errors, setErrors] = useState([]);
 
   const handleChange = (newValue) => {
     setValue(newValue);
-    if (onChange) {
-      onChange(newValue);
-    }
-    if (properties.validation) {
-      const validationErrors = validateField(newValue, properties.validation, formContext);
+    if (properties?.validation) {
+      const validationErrors = validateField(newValue, properties.validation, {});
       setErrors(validationErrors);
-      if (onValidationChange) {
-        onValidationChange(validationErrors.length === 0);
-      }
     }
   };
 
   useEffect(() => {
     // Validate initial value
-    if (properties.validation && properties.value) {
-      const validationErrors = validateField(properties.value, properties.validation, formContext);
+    if (properties?.validation && properties?.value) {
+      const validationErrors = validateField(properties.value, properties.validation, {});
       setErrors(validationErrors);
-      if (onValidationChange) {
-        onValidationChange(validationErrors.length === 0);
-      }
     }
-  }, [properties.validation, properties.value, formContext]);
+  }, [properties?.validation, properties?.value]);
 
   const getSizeStyles = () => ({
-    width: properties.width || 'auto',
-    height: properties.height || 'auto',
-    minWidth: properties.minWidth,
-    maxWidth: properties.maxWidth,
-    minHeight: properties.minHeight,
-    maxHeight: properties.maxHeight,
+    width: properties?.width || 'auto',
+    height: properties?.height || 'auto',
+    minWidth: properties?.minWidth,
+    maxWidth: properties?.maxWidth,
+    minHeight: properties?.minHeight,
+    maxHeight: properties?.maxHeight,
   });
 
   const classes = useStyles();
@@ -87,10 +79,10 @@ function RenderComponent({ type, properties, formContext, onValidationChange, on
     case 'input':
       return (
         <TextField
-          label={properties.label}
-          placeholder={properties.placeholder}
-          required={properties.required}
-          type={properties.type}
+          label={properties?.label}
+          placeholder={properties?.placeholder}
+          required={properties?.required}
+          type={properties?.type || 'text'}
           variant="outlined"
           fullWidth
           value={value}
@@ -107,14 +99,14 @@ function RenderComponent({ type, properties, formContext, onValidationChange, on
     case 'select':
       return (
         <FormControl variant="outlined" className={classes.formControl} error={errors.length > 0} style={getSizeStyles()}>
-          <InputLabel>{properties.label}</InputLabel>
+          <InputLabel>{properties?.label}</InputLabel>
           <Select
-            label={properties.label}
-            required={properties.required}
+            label={properties?.label}
+            required={properties?.required}
             value={value}
             onChange={(e) => handleChange(e.target.value)}
           >
-            {properties.options.split(',').map((option) => (
+            {(properties?.options || '').split(',').filter(Boolean).map((option) => (
               <MenuItem key={option} value={option}>{option}</MenuItem>
             ))}
           </Select>
@@ -126,11 +118,11 @@ function RenderComponent({ type, properties, formContext, onValidationChange, on
         <FormControlLabel
           control={
             <Checkbox
-              checked={properties.checked}
+              checked={properties?.checked || false}
               color="primary"
             />
           }
-          label={properties.label}
+          label={properties?.label}
           style={getSizeStyles()}
         />
       );
@@ -138,9 +130,9 @@ function RenderComponent({ type, properties, formContext, onValidationChange, on
     case 'radio':
       return (
         <FormControl component="fieldset" style={getSizeStyles()}>
-          <Typography>{properties.label}</Typography>
-          <RadioGroup value={properties.defaultValue}>
-            {properties.options.split(',').map((option) => (
+          <Typography>{properties?.label}</Typography>
+          <RadioGroup value={properties?.defaultValue || ''}>
+            {(properties?.options || '').split(',').filter(Boolean).map((option) => (
               <FormControlLabel
                 key={option}
                 value={option}

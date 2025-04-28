@@ -1,15 +1,5 @@
 const mongoose = require('mongoose');
 
-const componentSchema = new mongoose.Schema({
-  id: Number,
-  type: String,
-  properties: mongoose.Schema.Types.Mixed,
-  position: {
-    x: Number,
-    y: Number
-  }
-}, { _id: false });
-
 const templateSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -20,15 +10,25 @@ const templateSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
+  components: [{
+    type: {
+      type: String,
+      required: true
+    },
+    properties: {
+      type: Map,
+      of: mongoose.Schema.Types.Mixed
+    },
+    position: {
+      x: Number,
+      y: Number
+    }
+  }],
   isPublic: {
     type: Boolean,
     default: false
   },
-  components: {
-    type: [componentSchema],
-    default: []
-  },
-  userId: {
+  createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
@@ -49,6 +49,4 @@ templateSchema.pre('save', function(next) {
   next();
 });
 
-const Template = mongoose.model('Template', templateSchema);
-
-module.exports = Template; 
+module.exports = mongoose.model('Template', templateSchema); 

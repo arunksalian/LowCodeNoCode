@@ -22,18 +22,51 @@ const ComponentWrapper = styled('div')(({ theme }) => ({
   },
 }));
 
-function Canvas({ components, onDrop, onSelectComponent }) {
-  const [validationState, setValidationState] = useState({});
-  const [formContext, setFormContext] = useState({});
+function Canvas() {
+  const [components, setComponents] = useState([]);
+  const [selectedComponent, setSelectedComponent] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState(null);
 
-  // Make components available globally for the property editor
-  window.lowCodeComponents = components;
+  const handleDrop = (item, position) => {
+    const newComponent = {
+      id: `${item.type}_${Date.now()}`,
+      type: item.type,
+      position,
+      properties: { ...item.defaultProperties },
+    };
+    setComponents(prevComponents => {
+      const updatedComponents = [...prevComponents, newComponent];
+      saveTemplate(updatedComponents);
+      return updatedComponents;
+    });
+  };
 
-  const handleComponentChange = (componentId, value) => {
-    setFormContext(prev => ({
-      ...prev,
-      [componentId]: value
-    }));
+  const saveTemplate = async (updatedComponents) => {
+    try {
+      setIsSaving(true);
+      setError(null);
+      const response = await fetch('http://localhost:5000/api/templates', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify({
+          name: 'My Template',
+          description: 'Auto-saved template',
+          components: updatedComponents,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to save template');
+      }
+    } catch (err) {
+      console.error('Error saving template:', err);
+      setError('Failed to save template');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const [, drop] = useDrop(() => ({
@@ -45,9 +78,9 @@ function Canvas({ components, onDrop, onSelectComponent }) {
         x: offset.x - canvasRect.left,
         y: offset.y - canvasRect.top,
       };
-      onDrop(item, position);
+      handleDrop(item, position);
     },
-  }));
+  }), []);
 
   return (
     <StyledPaper 
@@ -61,21 +94,21 @@ function Canvas({ components, onDrop, onSelectComponent }) {
             left: component.position.x,
             top: component.position.y,
           }}
-          onClick={() => onSelectComponent(component)}
+          onClick={() => setSelectedComponent(component)}
         >
-          <RenderComponent 
-            {...component} 
-            formContext={formContext}
-            onValidationChange={(isValid) => {
-              setValidationState(prev => ({
-                ...prev,
-                [component.id]: isValid
-              }));
-            }}
-            onChange={(value) => handleComponentChange(component.id, value)}
-          />
+          <RenderComponent component={component} />
         </ComponentWrapper>
       ))}
+      {error && (
+        <div style={{ color: 'red', position: 'absolute', bottom: 10, right: 10 }}>
+          {error}
+        </div>
+      )}
+      {isSaving && (
+        <div style={{ position: 'absolute', bottom: 10, right: 10 }}>
+          Saving...
+        </div>
+      )}
     </StyledPaper>
   );
 }
