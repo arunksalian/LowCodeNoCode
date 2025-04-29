@@ -286,335 +286,6 @@ This diagram illustrates the three-tier architecture of the platform:
   Request → Cache Check → Database Query → Cache Update → Response
   ```
 
-### Data Flow Diagram
-```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│             │     │             │     │             │
-│  User       │────►│  Template   │────►│  Data       │
-│  Input      │     │  Engine     │     │  Source     │
-│             │     │             │     │             │
-└─────────────┘     └─────────────┘     └─────────────┘
-                           │                 │
-                           │                 │
-                           ▼                 ▼
-                    ┌─────────────┐     ┌─────────────┐
-                    │             │     │             │
-                    │  Validation │     │  Storage    │
-                    │  Layer      │     │  Layer      │
-                    │             │     │             │
-                    └─────────────┘     └─────────────┘
-```
-
-**Description:**
-This diagram illustrates the data processing flow:
-1. **User Input Processing**:
-   - Form data collection
-   - Input validation
-   - Data transformation
-2. **Template Engine**:
-   - Template rendering
-   - Component processing
-   - Data binding
-3. **Data Source Integration**:
-   - External API calls
-   - Database queries
-   - Data transformation
-4. **Validation Layer**:
-   - Data validation rules
-   - Business logic validation
-   - Error handling
-5. **Storage Layer**:
-   - Data persistence
-   - Cache management
-   - Data synchronization
-
-### Frontend (Client)
-- **Technology Stack**: React.js with Material-UI
-- **Port**: 3001 (Development)
-- **Key Components**:
-  1. **Authentication**
-     - Login/Register functionality
-     - JWT-based authentication
-     - Protected routes
-     - Token management
-     - Auto-logout on token expiration
-     - Session persistence
-     - Role-based access control
-
-  2. **Template Management**
-     - Template creation and editing
-     - Component library
-     - Drag-and-drop interface
-     - Property editor
-     - Template preview
-     - Version control
-     - Template sharing
-     - Template validation
-     - Template export/import
-
-  3. **Data Integration**
-     - Data source management
-     - REST API integration
-     - Query execution
-     - Data visualization
-     - Real-time data updates
-     - Data validation
-     - Data transformation
-     - Error handling
-
-  4. **Workspace Management**
-     - Workspace creation and organization
-     - Template organization
-     - Access control
-     - Collaboration features
-     - Resource management
-     - Version control
-     - Backup and restore
-
-### Backend (Server)
-- **Technology Stack**: Node.js, Express.js, MongoDB
-- **Port**: 5000
-- **Key Components**:
-  1. **API Layer**
-     - RESTful endpoints
-     - Authentication middleware
-     - Request validation
-     - Error handling
-     - Rate limiting
-     - CORS configuration
-     - API documentation
-     - Versioning
-
-  2. **Data Layer**
-     - MongoDB database
-     - Mongoose models
-     - Data validation
-     - Schema management
-     - Index optimization
-     - Data migration
-     - Backup strategy
-     - Data integrity
-
-  3. **Authentication**
-     - JWT token generation
-     - User management
-     - Role-based access control
-     - Password hashing
-     - Session management
-     - OAuth integration
-     - Multi-factor authentication
-     - Security policies
-
-  4. **Template Engine**
-     - Template storage
-     - Component management
-     - Version control
-     - Template validation
-     - Template deployment
-     - Template rendering
-     - Template optimization
-     - Template caching
-
-## Data Models
-
-### User
-```javascript
-{
-  _id: ObjectId,
-  email: String,
-  password: String (hashed),
-  role: String,
-  createdAt: Date,
-  updatedAt: Date,
-  lastLogin: Date,
-  preferences: {
-    theme: String,
-    language: String,
-    notifications: Boolean,
-    timezone: String
-  },
-  profile: {
-    name: String,
-    avatar: String,
-    organization: String,
-    department: String
-  },
-  security: {
-    twoFactorEnabled: Boolean,
-    lastPasswordChange: Date,
-    failedLoginAttempts: Number
-  }
-}
-```
-
-### Template
-```javascript
-{
-  _id: ObjectId,
-  name: String,
-  description: String,
-  components: [{
-    type: String,
-    properties: Map,
-    position: {
-      x: Number,
-      y: Number
-    },
-    validation: {
-      required: Boolean,
-      rules: [String],
-      customValidation: String
-    },
-    styling: {
-      theme: String,
-      customStyles: Map
-    }
-  }],
-  isPublic: Boolean,
-  createdBy: ObjectId (ref: User),
-  createdAt: Date,
-  updatedAt: Date,
-  version: Number,
-  tags: [String],
-  metadata: {
-    category: String,
-    complexity: String,
-    estimatedTime: Number,
-    dependencies: [String]
-  },
-  permissions: {
-    read: [ObjectId],
-    write: [ObjectId],
-    execute: [ObjectId]
-  }
-}
-```
-
-### DataSource
-```javascript
-{
-  _id: ObjectId,
-  name: String,
-  type: String (enum: ['rest', 'graphql', 'database']),
-  config: {
-    url: String,
-    method: String,
-    headers: Map,
-    body: String,
-    queryParams: Map,
-    authentication: {
-      type: String,
-      credentials: Map,
-      token: String
-    },
-    caching: {
-      enabled: Boolean,
-      ttl: Number
-    }
-  },
-  createdAt: Date,
-  updatedAt: Date,
-  lastUsed: Date,
-  status: String,
-  errorCount: Number,
-  performance: {
-    responseTime: Number,
-    successRate: Number
-  },
-  monitoring: {
-    lastCheck: Date,
-    health: String,
-    alerts: [String]
-  }
-}
-```
-
-### Workspace
-```javascript
-{
-  _id: ObjectId,
-  name: String,
-  description: String,
-  templates: [ObjectId (ref: Template)],
-  createdBy: ObjectId (ref: User),
-  createdAt: Date,
-  updatedAt: Date,
-  members: [{
-    user: ObjectId (ref: User),
-    role: String,
-    permissions: [String],
-    joinedAt: Date
-  }],
-  settings: {
-    visibility: String,
-    accessControl: Boolean,
-    collaboration: {
-      enabled: Boolean,
-      mode: String
-    },
-    notifications: {
-      enabled: Boolean,
-      channels: [String]
-    }
-  },
-  analytics: {
-    views: Number,
-    lastActivity: Date,
-    popularTemplates: [ObjectId]
-  }
-}
-```
-
-## API Endpoints
-
-### Authentication
-- POST `/api/auth/login` - User login
-- POST `/api/auth/register` - User registration
-- GET `/api/auth/me` - Get current user
-- POST `/api/auth/refresh` - Refresh token
-- POST `/api/auth/logout` - User logout
-- POST `/api/auth/forgot-password` - Request password reset
-- POST `/api/auth/reset-password` - Reset password
-- GET `/api/auth/verify-email` - Verify email address
-
-### Templates
-- GET `/api/templates` - Get all templates
-- POST `/api/templates` - Create template
-- GET `/api/templates/:id` - Get template by ID
-- PUT `/api/templates/:id` - Update template
-- DELETE `/api/templates/:id` - Delete template
-- GET `/api/templates/:id/versions` - Get template versions
-- POST `/api/templates/:id/versions` - Create new version
-- GET `/api/templates/:id/preview` - Preview template
-- POST `/api/templates/:id/export` - Export template
-- POST `/api/templates/:id/import` - Import template
-- GET `/api/templates/:id/analytics` - Get template analytics
-
-### Data Sources
-- GET `/api/data-sources` - Get all data sources
-- POST `/api/data-sources` - Create data source
-- PUT `/api/data-sources/:id` - Update data source
-- DELETE `/api/data-sources/:id` - Delete data source
-- POST `/api/data-sources/test` - Test connection
-- POST `/api/data-sources/:id/execute` - Execute query
-- GET `/api/data-sources/:id/schema` - Get data schema
-- POST `/api/data-sources/:id/validate` - Validate configuration
-- GET `/api/data-sources/:id/health` - Check data source health
-- POST `/api/data-sources/:id/cache` - Manage cache settings
-
-### Workspaces
-- GET `/api/workspaces` - Get all workspaces
-- POST `/api/workspaces` - Create workspace
-- GET `/api/workspaces/:id` - Get workspace by ID
-- PUT `/api/workspaces/:id` - Update workspace
-- DELETE `/api/workspaces/:id` - Delete workspace
-- POST `/api/workspaces/:id/members` - Add member
-- DELETE `/api/workspaces/:id/members/:userId` - Remove member
-- PUT `/api/workspaces/:id/members/:userId` - Update member role
-- GET `/api/workspaces/:id/analytics` - Get workspace analytics
-- POST `/api/workspaces/:id/backup` - Create workspace backup
-- POST `/api/workspaces/:id/restore` - Restore workspace
-
 ## Authentication Architecture
 
 ### Authentication Flow Diagram
@@ -834,94 +505,6 @@ Route Access → Token Check → Validation → Permission Check → Access Gran
 - Access patterns
 - Compliance logs
 
-## Deployment
-
-### Frontend
-- React application
-- Static file serving
-- Environment configuration
-- Build optimization
-- CDN integration
-- Cache management
-- Error tracking
-- Performance monitoring
-- Progressive Web App (PWA) support
-- Service Worker implementation
-
-### Backend
-- Node.js/Express server
-- MongoDB database
-- Environment variables
-- Error logging
-- Load balancing
-- Auto-scaling
-- Backup strategy
-- Monitoring and alerts
-- Containerization
-- Kubernetes orchestration
-
-## Development Workflow
-
-### Local Development
-1. Start MongoDB server
-2. Start backend server (port 5000)
-3. Start frontend development server (port 3001)
-4. Access application at http://localhost:3001
-5. Run tests
-6. Code review
-7. Build and deploy
-8. Monitor performance
-9. Debug issues
-10. Update documentation
-
-### Environment Setup
-- Frontend: `.env.development`
-- Backend: `.env`
-- Database: MongoDB connection string
-- API keys
-- Service accounts
-- Development tools
-- Testing framework
-- CI/CD pipeline
-- Monitoring tools
-- Security scanning
-
-## Future Enhancements
-
-### Planned Features
-1. Real-time collaboration
-2. Version control for templates
-3. Advanced component library
-4. Custom component creation
-5. Template marketplace
-6. Analytics and reporting
-7. Multi-language support
-8. Advanced data source integrations
-9. AI-powered suggestions
-10. Mobile application
-11. Offline support
-12. API documentation generator
-13. Workflow automation
-14. Integration marketplace
-15. Advanced security features
-
-### Technical Improvements
-1. WebSocket integration
-2. Caching layer
-3. Performance optimization
-4. Automated testing
-5. CI/CD pipeline
-6. Containerization
-7. Microservices architecture
-8. GraphQL API
-9. Serverless functions
-10. Cloud-native deployment
-11. Monitoring and observability
-12. Security hardening
-13. Database optimization
-14. API versioning
-15. Documentation automation
-
 ## Deployment Architecture
 
 ### Deployment Layer Diagram
@@ -953,21 +536,6 @@ Route Access → Token Check → Validation → Permission Check → Access Gran
 │  └─────────────┘  └─────────────┘  └─────────────┘     │
 └─────────────────────────────────────────────────────────┘
 ```
-
-**Description:**
-This diagram shows the deployment architecture:
-1. **Production Environment**:
-   - Containerized applications
-   - Service isolation
-   - Resource management
-2. **Kubernetes Cluster**:
-   - Ingress Controller: Traffic management
-   - Services & Load Balancer: Service discovery
-   - Pods & Deployments: Application deployment
-3. **CI/CD Pipeline**:
-   - Build Stage: Code compilation
-   - Test Stage: Quality assurance
-   - Deploy Stage: Production deployment
 
 ### Deployment Components
 
@@ -1200,4 +768,40 @@ This diagram shows the deployment architecture:
 - Monitoring procedures
 - Backup procedures
 - Recovery procedures
-- Maintenance procedures 
+- Maintenance procedures
+
+## Future Enhancements
+
+### Planned Features
+1. Real-time collaboration
+2. Version control for templates
+3. Advanced component library
+4. Custom component creation
+5. Template marketplace
+6. Analytics and reporting
+7. Multi-language support
+8. Advanced data source integrations
+9. AI-powered suggestions
+10. Mobile application
+11. Offline support
+12. API documentation generator
+13. Workflow automation
+14. Integration marketplace
+15. Advanced security features
+
+### Technical Improvements
+1. WebSocket integration
+2. Caching layer
+3. Performance optimization
+4. Automated testing
+5. CI/CD pipeline
+6. Containerization
+7. Microservices architecture
+8. GraphQL API
+9. Serverless functions
+10. Cloud-native deployment
+11. Monitoring and observability
+12. Security hardening
+13. Database optimization
+14. API versioning
+15. Documentation automation 
