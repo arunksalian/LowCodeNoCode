@@ -615,40 +615,224 @@ This diagram illustrates the data processing flow:
 - POST `/api/workspaces/:id/backup` - Create workspace backup
 - POST `/api/workspaces/:id/restore` - Restore workspace
 
-## Security
+## Authentication Architecture
 
-### Authentication
-- JWT-based authentication
-- Token stored in localStorage
-- Automatic token refresh
-- Protected routes
-- Session management
+### Authentication Flow Diagram
+```
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│             │     │             │     │             │
+│  User       │────►│  Frontend   │────►│  Backend    │
+│  Login      │     │  Auth       │     │  Auth       │
+│             │     │  Service    │     │  Service    │
+└─────────────┘     └─────────────┘     └─────────────┘
+                           │                 │
+                           │                 │
+                           ▼                 ▼
+                    ┌─────────────┐     ┌─────────────┐
+                    │             │     │             │
+                    │  Token      │     │  User       │
+                    │  Storage    │     │  Database   │
+                    │             │     │             │
+                    └─────────────┘     └─────────────┘
+```
+
+### Authentication Components
+
+#### 1. Frontend Authentication
+```
+┌─────────────────────────────────────────────────────────┐
+│                     Frontend Auth                       │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │
+│  │  Login      │  │  Token      │  │  Protected  │     │
+│  │  Form       │  │  Management │  │  Routes     │     │
+│  └─────────────┘  └─────────────┘  └─────────────┘     │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Component Details:**
+- **Login Form**
+  - Email/password input
+  - Validation
+  - Error handling
+  - Remember me option
+  - Forgot password link
+
+- **Token Management**
+  - JWT storage
+  - Token refresh
+  - Token validation
+  - Auto-logout
+  - Session persistence
+
+- **Protected Routes**
+  - Route guards
+  - Role-based access
+  - Permission checks
+  - Redirect handling
+  - Session validation
+
+#### 2. Backend Authentication
+```
+┌─────────────────────────────────────────────────────────┐
+│                     Backend Auth                        │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │
+│  │  Auth       │  │  Token      │  │  User       │     │
+│  │  Controller │  │  Service    │  │  Service    │     │
+│  └─────────────┘  └─────────────┘  └─────────────┘     │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Component Details:**
+- **Auth Controller**
+  - Login endpoint
+  - Register endpoint
+  - Password reset
+  - Email verification
+  - Logout handling
+
+- **Token Service**
+  - JWT generation
+  - Token validation
+  - Refresh token
+  - Token blacklisting
+  - Session management
+
+- **User Service**
+  - User creation
+  - Password hashing
+  - Role management
+  - Profile updates
+  - Account deletion
+
+### Authentication Flow Details
+
+#### 1. Login Flow
+```
+User Input → Validation → Backend Auth → Token Generation → Storage → Protected Access
+```
+
+**Steps:**
+1. User enters credentials
+2. Frontend validates input
+3. Backend verifies credentials
+4. JWT token generated
+5. Token stored in localStorage
+6. User redirected to protected route
+
+#### 2. Token Refresh Flow
+```
+Token Expiry → Refresh Request → New Token → Storage → Continue Session
+```
+
+**Steps:**
+1. Token expiry detected
+2. Refresh token sent
+3. New token generated
+4. Token updated in storage
+5. Session continued
+
+#### 3. Protected Route Flow
+```
+Route Access → Token Check → Validation → Permission Check → Access Granted/Denied
+```
+
+**Steps:**
+1. Route access attempted
+2. Token presence checked
+3. Token validated
+4. Permissions verified
+5. Access granted or denied
+
+### Security Measures
+
+#### 1. Token Security
+- JWT with expiration
+- Refresh token rotation
+- Token blacklisting
+- Secure storage
+- HTTPS only
+
+#### 2. Password Security
+- Bcrypt hashing
+- Salt generation
 - Password policies
-- Multi-factor authentication (planned)
-- OAuth integration (planned)
-- Single Sign-On (SSO) support
+- Reset mechanisms
+- Brute force protection
 
-### Authorization
-- Role-based access control
-- Template visibility control
-- Workspace access control
-- Resource-level permissions
-- API key management
-- OAuth integration (planned)
-- Audit logging
-- Compliance monitoring
+#### 3. Session Security
+- Session timeout
+- Concurrent session limits
+- Device tracking
+- IP validation
+- Activity monitoring
 
-### Data Security
-- Password hashing
-- Input validation
-- CORS configuration
-- Rate limiting
-- SQL injection prevention
-- XSS protection
-- CSRF protection
-- Data encryption
-- Secure headers
-- Content Security Policy (CSP)
+### Authentication API Endpoints
+
+#### 1. User Authentication
+- POST `/api/auth/login` - User login
+- POST `/api/auth/register` - User registration
+- POST `/api/auth/logout` - User logout
+- POST `/api/auth/refresh` - Refresh token
+- POST `/api/auth/forgot-password` - Request password reset
+- POST `/api/auth/reset-password` - Reset password
+- GET `/api/auth/verify-email` - Verify email address
+
+#### 2. User Management
+- GET `/api/auth/me` - Get current user
+- PUT `/api/auth/me` - Update user profile
+- PUT `/api/auth/password` - Change password
+- DELETE `/api/auth/me` - Delete account
+
+#### 3. Session Management
+- GET `/api/auth/sessions` - Get active sessions
+- DELETE `/api/auth/sessions/:id` - Terminate session
+- DELETE `/api/auth/sessions` - Terminate all sessions
+
+### Error Handling
+
+#### 1. Authentication Errors
+- Invalid credentials
+- Token expired
+- Invalid token
+- Account locked
+- Rate limit exceeded
+
+#### 2. User Errors
+- Email already exists
+- Password too weak
+- Invalid email format
+- Account not verified
+- Session expired
+
+#### 3. System Errors
+- Database connection
+- Token generation
+- Email service
+- Storage issues
+- Network problems
+
+### Monitoring and Logging
+
+#### 1. Authentication Logs
+- Login attempts
+- Failed logins
+- Password resets
+- Token refreshes
+- Session changes
+
+#### 2. Security Alerts
+- Suspicious activity
+- Multiple failures
+- IP changes
+- Device changes
+- Unusual patterns
+
+#### 3. Audit Trail
+- User actions
+- System changes
+- Security events
+- Access patterns
+- Compliance logs
 
 ## Deployment
 
