@@ -59,43 +59,232 @@ This diagram illustrates the three-tier architecture of the platform:
    - Mongoose Models: Data modeling and validation
    - Data Validation: Schema and business rule validation
 
-### Component Interaction Flow
+### Component Interaction Flow with Detailed Architecture
 ```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│             │     │             │     │             │
-│  User       │────►│  Frontend   │────►│  Backend    │
-│  Interface  │     │  React App  │     │  API        │
-│             │     │             │     │             │
-└─────────────┘     └─────────────┘     └─────────────┘
-                           │                 │
-                           │                 │
-                           ▼                 ▼
-                    ┌─────────────┐     ┌─────────────┐
-                    │             │     │             │
-                    │  State      │     │  Database   │
-                    │  Management │     │  MongoDB    │
-                    │             │     │             │
-                    └─────────────┘     └─────────────┘
+┌─────────────────────────────────────────────────────────┐
+│                     User Interface Layer                 │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │
+│  │  Pages      │  │  Components │  │  Layouts    │     │
+│  │  & Routes   │  │  & Widgets  │  │  & Themes   │     │
+│  └─────────────┘  └─────────────┘  └─────────────┘     │
+└─────────────────────────────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────┐
+│                     Frontend Layer                      │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │
+│  │  State      │  │  Services   │  │  Utils      │     │
+│  │  Management │  │  & API      │  │  & Helpers  │     │
+│  └─────────────┘  └─────────────┘  └─────────────┘     │
+└─────────────────────────────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────┐
+│                     Backend Layer                       │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │
+│  │  Controllers│  │  Services   │  │  Models     │     │
+│  │  & Routes   │  │  & Business │  │  & Schemas  │     │
+│  └─────────────┘  └─────────────┘  └─────────────┘     │
+└─────────────────────────────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────┐
+│                     Data Layer                          │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │
+│  │  Database   │  │  Cache      │  │  Storage    │     │
+│  │  & Queries  │  │  & Session  │  │  & Files    │     │
+│  └─────────────┘  └─────────────┘  └─────────────┘     │
+└─────────────────────────────────────────────────────────┘
 ```
 
-**Description:**
-This diagram shows the flow of data and interactions between components:
-1. **User Interface → Frontend**:
-   - User actions trigger React components
-   - Event handling and state updates
-   - Form submissions and data collection
-2. **Frontend → Backend**:
-   - API requests with authentication
-   - Data validation and transformation
-   - Error handling and response processing
-3. **State Management**:
-   - Redux store updates
-   - Component state management
-   - Data caching and persistence
-4. **Database Interaction**:
-   - CRUD operations
-   - Data validation and transformation
-   - Query optimization
+**Detailed Component Architecture:**
+
+#### 1. User Interface Layer
+```
+┌─────────────────────────────────────────────────────────┐
+│                     User Interface Components            │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │
+│  │  Pages      │  │  Components │  │  Layouts    │     │
+│  │  & Routes   │  │  & Widgets  │  │  & Themes   │     │
+│  └─────────────┘  └─────────────┘  └─────────────┘     │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Component Details:**
+- **Pages & Routes**
+  - Login/Register pages
+  - Dashboard
+  - Template editor
+  - Workspace management
+  - User settings
+  - Error pages
+
+- **Components & Widgets**
+  - Form components
+  - Data visualization
+  - Navigation elements
+  - Modal dialogs
+  - Notifications
+  - Custom widgets
+
+- **Layouts & Themes**
+  - Responsive layouts
+  - Grid systems
+  - Theme configuration
+  - Style management
+  - Accessibility features
+
+#### 2. Frontend Layer
+```
+┌─────────────────────────────────────────────────────────┐
+│                     Frontend Architecture               │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │
+│  │  State      │  │  Services   │  │  Utils      │     │
+│  │  Management │  │  & API      │  │  & Helpers  │     │
+│  └─────────────┘  └─────────────┘  └─────────────┘     │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Component Details:**
+- **State Management**
+  - Redux store
+  - Action creators
+  - Reducers
+  - Middleware
+  - Selectors
+  - State persistence
+
+- **Services & API**
+  - API clients
+  - Authentication
+  - Data fetching
+  - Error handling
+  - Request/Response interceptors
+  - Cache management
+
+- **Utils & Helpers**
+  - Form validation
+  - Data transformation
+  - Date formatting
+  - Error handling
+  - Logging
+  - Testing utilities
+
+#### 3. Backend Layer
+```
+┌─────────────────────────────────────────────────────────┐
+│                     Backend Architecture                │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │
+│  │  Controllers│  │  Services   │  │  Models     │     │
+│  │  & Routes   │  │  & Business │  │  & Schemas  │     │
+│  └─────────────┘  └─────────────┘  └─────────────┘     │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Component Details:**
+- **Controllers & Routes**
+  - Request handling
+  - Response formatting
+  - Error handling
+  - Input validation
+  - Authentication middleware
+  - Route protection
+
+- **Services & Business Logic**
+  - Template processing
+  - User management
+  - Data source integration
+  - File handling
+  - Email services
+  - Notification system
+
+- **Models & Schemas**
+  - Data models
+  - Validation rules
+  - Relationships
+  - Indexes
+  - Hooks
+  - Virtual fields
+
+#### 4. Data Layer
+```
+┌─────────────────────────────────────────────────────────┐
+│                     Data Layer Architecture             │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │
+│  │  Database   │  │  Cache      │  │  Storage    │     │
+│  │  & Queries  │  │  & Session  │  │  & Files    │     │
+│  └─────────────┘  └─────────────┘  └─────────────┘     │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Component Details:**
+- **Database & Queries**
+  - MongoDB collections
+  - Query optimization
+  - Indexes
+  - Aggregation pipelines
+  - Transactions
+  - Backup/restore
+
+- **Cache & Session**
+  - Redis cache
+  - Session storage
+  - Token management
+  - Rate limiting
+  - Cache invalidation
+  - Session persistence
+
+- **Storage & Files**
+  - File system
+  - Cloud storage
+  - File uploads
+  - Image processing
+  - Backup management
+  - Access control
+
+### Component Interaction Details
+
+#### 1. User Interface → Frontend
+- **Event Flow**
+  ```
+  User Action → Event Handler → State Update → UI Update
+  ```
+- **Data Flow**
+  ```
+  Form Input → Validation → State Update → API Call
+  ```
+- **Error Handling**
+  ```
+  Error → Error Boundary → Error State → User Notification
+  ```
+
+#### 2. Frontend → Backend
+- **Request Flow**
+  ```
+  API Call → Request Interceptor → Backend → Response Interceptor → State Update
+  ```
+- **Authentication Flow**
+  ```
+  Login → Token Generation → Token Storage → Protected Route Access
+  ```
+- **Data Synchronization**
+  ```
+  Local State → API Call → Server State → State Update → UI Update
+  ```
+
+#### 3. Backend → Data Layer
+- **Database Operations**
+  ```
+  Request → Validation → Database Query → Response → Cache Update
+  ```
+- **File Operations**
+  ```
+  Upload → Validation → Storage → Database Update → Response
+  ```
+- **Cache Operations**
+  ```
+  Request → Cache Check → Database Query → Cache Update → Response
+  ```
 
 ### Data Flow Diagram
 ```
