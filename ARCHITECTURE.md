@@ -44,6 +44,21 @@ The Low-Code/No-Code platform is designed to empower users to create, manage, an
 └─────────────────────────────────────────────────────────┘
 ```
 
+**Description:**
+This diagram illustrates the three-tier architecture of the platform:
+1. **Client Layer**: Handles user interface and state management
+   - React Frontend: Main application framework
+   - Material-UI Components: UI component library
+   - Redux State: Centralized state management
+2. **API Layer**: Manages business logic and request processing
+   - Express Server: API server implementation
+   - JWT Auth Middleware: Authentication and authorization
+   - Validation Layer: Request and data validation
+3. **Data Layer**: Handles data persistence and management
+   - MongoDB Database: Primary data storage
+   - Mongoose Models: Data modeling and validation
+   - Data Validation: Schema and business rule validation
+
 ### Component Interaction Flow
 ```
 ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
@@ -63,6 +78,25 @@ The Low-Code/No-Code platform is designed to empower users to create, manage, an
                     └─────────────┘     └─────────────┘
 ```
 
+**Description:**
+This diagram shows the flow of data and interactions between components:
+1. **User Interface → Frontend**:
+   - User actions trigger React components
+   - Event handling and state updates
+   - Form submissions and data collection
+2. **Frontend → Backend**:
+   - API requests with authentication
+   - Data validation and transformation
+   - Error handling and response processing
+3. **State Management**:
+   - Redux store updates
+   - Component state management
+   - Data caching and persistence
+4. **Database Interaction**:
+   - CRUD operations
+   - Data validation and transformation
+   - Query optimization
+
 ### Data Flow Diagram
 ```
 ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
@@ -81,6 +115,29 @@ The Low-Code/No-Code platform is designed to empower users to create, manage, an
                     │             │     │             │
                     └─────────────┘     └─────────────┘
 ```
+
+**Description:**
+This diagram illustrates the data processing flow:
+1. **User Input Processing**:
+   - Form data collection
+   - Input validation
+   - Data transformation
+2. **Template Engine**:
+   - Template rendering
+   - Component processing
+   - Data binding
+3. **Data Source Integration**:
+   - External API calls
+   - Database queries
+   - Data transformation
+4. **Validation Layer**:
+   - Data validation rules
+   - Business logic validation
+   - Error handling
+5. **Storage Layer**:
+   - Data persistence
+   - Cache management
+   - Data synchronization
 
 ### Frontend (Client)
 - **Technology Stack**: React.js with Material-UI
@@ -523,6 +580,21 @@ The Low-Code/No-Code platform is designed to empower users to create, manage, an
 │  └─────────────┘  └─────────────┘  └─────────────┘     │
 └─────────────────────────────────────────────────────────┘
 ```
+
+**Description:**
+This diagram shows the deployment architecture:
+1. **Production Environment**:
+   - Containerized applications
+   - Service isolation
+   - Resource management
+2. **Kubernetes Cluster**:
+   - Ingress Controller: Traffic management
+   - Services & Load Balancer: Service discovery
+   - Pods & Deployments: Application deployment
+3. **CI/CD Pipeline**:
+   - Build Stage: Code compilation
+   - Test Stage: Quality assurance
+   - Deploy Stage: Production deployment
 
 ### Deployment Components
 
